@@ -1,0 +1,19 @@
+{
+    "name": "elvisoliveira/strptime-php",
+    "type": "library",
+    "description": "An implementation of strptime in PHP",
+    "keywords": [],
+    "homepage": "https://github.com/elvisoliveira/strptime-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mathieu Chabanon",
+            "email": "https://github.com/matchab"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "Strptime.php"
+        ]
+    }
+}
