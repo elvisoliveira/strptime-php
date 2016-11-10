@@ -3,7 +3,7 @@
 class Strptime
 {
 
-    function _strptime_match(&$buffer, $pattern)
+    private function _strptime_match(&$buffer, $pattern)
     {
         if (is_array($pattern))
         {
@@ -23,12 +23,12 @@ class Strptime
         return $ret;
     }
 
-    function _strptime_clamp($n, $min, $max)
+    private function _strptime_clamp($n, $min, $max)
     {
         return max(min($n, $max), $min);
     }
 
-    function _strptime_wdays($p)
+    private function _strptime_wdays($p)
     {
         $locales = array();
 
@@ -41,7 +41,7 @@ class Strptime
         return $locales;
     }
 
-    function _strptime_months($p)
+    private function _strptime_months($p)
     {
         $locales = array();
 
@@ -53,9 +53,8 @@ class Strptime
         return $locales;
     }
 
-    function strptime($date, $format)
+    public function getStrptime($date, $format)
     {
-        //Default return values
         $tmSec  = 0;
         $tmMin  = 0;
         $tmHour = 0;
@@ -82,30 +81,30 @@ class Strptime
                 {
                     case 'A':
                     case 'a':
-                        _strptime_match($buffer, _strptime_wdays($c));
+                        $this->_strptime_match($buffer, $this->_strptime_wdays($c));
                         break;
 
                     case 'B':
                     case 'b':
                     case 'h':
-                        $months = _strptime_months($c);
-                        $month  = _strptime_match($buffer, $months);
+                        $months = $this->_strptime_months($c);
+                        $month  = $this->_strptime_match($buffer, $months);
                         $tmMon  = array_search($month, $months);
                         break;
 
                     case 'D':
                         //Unsupported by strftime on Windows
-                        _strptime_match($buffer, '\d{2}\/\d{2}\/\d{2}');
+                        $this->_strptime_match($buffer, '\d{2}\/\d{2}\/\d{2}');
                         break;
 
                     //case 'e':
                     case 'd':
-                        $tmMday = intval(_strptime_match($buffer, '\d{2}'));
+                        $tmMday = intval($this->_strptime_match($buffer, '\d{2}'));
                         break;
 
                     case 'F':
                         //Unsupported by strftime on Windows
-                        if ($ret = _strptime_match($buffer, '\d{4}-\d{2}-\d{2}'))
+                        if ($ret = $this->_strptime_match($buffer, '\d{4}-\d{2}-\d{2}'))
                         {
                             $frags  = explode('-', $ret);
                             $tmYear = intval($frags[0]);
@@ -115,27 +114,27 @@ class Strptime
                         break;
 
                     case 'H':
-                        $tmHour = intval(_strptime_match($buffer, '\d{2}'));
+                        $tmHour = intval($this->_strptime_match($buffer, '\d{2}'));
                         break;
 
                     case 'M':
-                        $tmMin = intval(_strptime_match($buffer, '\d{2}'));
+                        $tmMin = intval($this->_strptime_match($buffer, '\d{2}'));
                         break;
 
                     case 'm':
-                        $tmMon = intval(_strptime_match($buffer, '\d{2}'));
+                        $tmMon = intval($this->_strptime_match($buffer, '\d{2}'));
                         break;
 
                     case 'S':
-                        $tmSec = intval(_strptime_match($buffer, '\d{2}'));
+                        $tmSec = intval($this->_strptime_match($buffer, '\d{2}'));
                         break;
 
                     case 'Y':
-                        $tmYear = intval(_strptime_match($buffer, '\d{4}'));
+                        $tmYear = intval($this->_strptime_match($buffer, '\d{4}'));
                         break;
 
                     case 'y':
-                        $year = intval(_strptime_match($buffer, '\d{2}'));
+                        $year = intval($this->_strptime_match($buffer, '\d{2}'));
                         if ($year < 69)
                         {
                             $tmYear = 2000 + $year;
@@ -162,9 +161,9 @@ class Strptime
         }
 
         //Clamp hours values
-        $tmHour    = _strptime_clamp($tmHour, 0, 23);
-        $tmMin     = _strptime_clamp($tmMin, 0, 59);
-        $tmSec     = _strptime_clamp($tmSec, 0, 61); //>59 = Leap seconds
+        $tmHour    = $this->_strptime_clamp($tmHour, 0, 23);
+        $tmMin     = $this->_strptime_clamp($tmMin, 0, 59);
+        $tmSec     = $this->_strptime_clamp($tmSec, 0, 61); //>59 = Leap seconds
         //Compute wday and yday
         $timestamp = mktime($tmHour, $tmMin, $tmSec, $tmMon, $tmMday, $tmYear);
         $tmWday    = date('w', $timestamp);
